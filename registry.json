@@ -1,0 +1,124 @@
+{
+  "title": "Today in History hub registry",
+  "description": "Index of artifacts managed in this program hub.",
+  "version": "1.0.0",
+  "updated": "2026-04-26",
+  "mocks": [
+    {
+      "id": "mock-first-ui",
+      "type": "ui_mock",
+      "path": "mock/first/",
+      "preview_url": "https://codebystella.github.io/Today-In-History/mock/first/",
+      "description": "Static HTML prototype (digital archive style, Japanese). Inline event objects follow schema/event.schema.json field names.",
+      "status": "active"
+    }
+  ],
+  "schemas": [
+    {
+      "id": "event-json-schema",
+      "type": "json_schema",
+      "path": "schema/event.schema.json",
+      "description": "Canonical validation contract for one history event record.",
+      "status": "active"
+    },
+    {
+      "id": "sample-dataset",
+      "type": "sample_data",
+      "path": "schema/schema.json",
+      "description": "Sample events (April 20 examples); conforms to event.schema.json.",
+      "status": "active"
+    }
+  ],
+  "prompts": [
+    {
+      "id": "ingest-chatgpt-template",
+      "type": "prompt_template",
+      "path": "prompt/daily-events.template.md",
+      "description": "Prompt for ChatGPT.com to produce structured daily events (JP modern history).",
+      "status": "active"
+    },
+    {
+      "id": "prompt-readme",
+      "type": "documentation",
+      "path": "prompt/README.MD",
+      "description": "How to run ingestion, expected output shape, parser ownership.",
+      "status": "active"
+    }
+  ],
+  "strategies": [
+    {
+      "id": "monetization",
+      "type": "strategy",
+      "path": "docs/monetization.md",
+      "description": "Monetization model hypotheses and risks.",
+      "status": "draft"
+    },
+    {
+      "id": "product-strategy",
+      "type": "strategy",
+      "path": "docs/product-strategy.md",
+      "description": "Audience, scope, and differentiation.",
+      "status": "draft"
+    }
+  ],
+  "documentation": [
+    {
+      "id": "product-spec",
+      "type": "specification",
+      "path": "docs/product-spec.md",
+      "description": "Content scope, output rules, and mapping to event fields.",
+      "status": "active"
+    },
+    {
+      "id": "data-model",
+      "type": "specification",
+      "path": "docs/data-model.md",
+      "description": "Event record fields, JSON examples, optional SQL mapping, indexes.",
+      "status": "active"
+    },
+    {
+      "id": "data-pipeline",
+      "type": "architecture",
+      "path": "docs/data-pipeline.md",
+      "description": "ChatGPT.com acquisition, parse, validate, load, serve.",
+      "status": "active"
+    },
+    {
+      "id": "team",
+      "type": "team",
+      "path": "docs/team.md",
+      "description": "Roles and contacts template.",
+      "status": "template"
+    },
+    {
+      "id": "progress",
+      "type": "progress",
+      "path": "docs/progress.md",
+      "description": "Where delivery status is tracked.",
+      "status": "active"
+    },
+    {
+      "id": "root-readme",
+      "type": "documentation",
+      "path": "README.MD",
+      "description": "Repository layout and where to find specs, schemas, mocks, and links.",
+      "status": "active"
+    }
+  ],
+  "external_repositories": [
+    {
+      "id": "frontend",
+      "role": "frontend",
+      "url": null,
+      "description": "Web or mobile client that loads events from the API.",
+      "status": "planned"
+    },
+    {
+      "id": "backend",
+      "role": "backend_api",
+      "url": null,
+      "description": "API and persistence layer serving canonical event JSON.",
+      "status": "planned"
+    }
+  ]
+}

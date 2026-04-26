@@ -250,6 +250,12 @@
     .card--std { padding: 16px 16px; }
     .card--std__head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 6px; }
     .card--std__year { font-family: var(--serif-en); font-size: 0.9rem; color: var(--gold); font-weight: 600; }
+    .card--std__sub {
+      margin: -0.25rem 0 0.6rem;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      letter-spacing: 0.04em;
+    }
     .card--std__h {
       font-family: var(--serif-ja);
       font-size: 0.95rem;
@@ -399,7 +405,10 @@
     </section>
 
     <main id="root"></main>
-    <p class="foot-note">デジタル・アーカイブ風のモックです。年号の表示は年のみの目安です。画像は代表イメージです。</p>
+    <p class="foot-note">
+      デジタル・アーカイブ風のモックです。年号の表示は年のみの目安です。画像は代表イメージです。下記のデータはプログラムハブの
+      <code>schema/event.schema.json</code>（<code>date</code> は <code>YYYY-MM-DD</code>、<code>summary</code> / <code>description</code> / <code>images</code> など）と同じキー形です。一覧の日付は 4/16 デモ用のサンプルで、史実の月日と一致しない項目があります。
+    </p>
   </div>
 
   <nav class="tabbar" aria-label="メイン">
@@ -418,28 +427,32 @@
   </nav>
 
   <script>
-    const HERO_IMAGES = [
+    /**
+     * Event records use the program hub contract (see repo root schema/event.schema.json).
+     * List dates use YYYY-04-16 for this “4月16日” UI demo unless noted; not all are historically exact.
+     */
+    const HERO_IMAGE_PATHS = [
       "assets/slider_1.jfif",
       "assets/slider_2.jfif",
       "assets/slider_3.jfif",
       "assets/slider_4.jfif"
     ];
 
-    /** ファーストビュー（ヒーロー）特集 — アポロ16号 */
-    const FV_EVENT = {
-      year: 1972,
-      month: 4,
-      day: 16,
-      titleLine: "アポロ16号 打ち上げ",
-      lead:
-        "NASAの有人月ミッション・アポロ計画の第10回飛行（最後から2番目の月着陸ミッション）が、フロリダ州ケネディ宇宙センターからスタートした日。月の「高地」への初着陸を狙い、クレーターに偏りがちだった着陸点の地質を一気に補完する意義を持った。",
+    const FEATURED_EVENT = {
+      date: "1972-04-16",
+      locale_calendar_label: "4月16日",
+      category: "科学・技術",
+      title: "アポロ16号 打ち上げ",
+      subtitle: "有人月ミッション（月の高地への初着陸を目指す第10回飛行）",
       summary:
         "1972年4月16日（米東部時間）、**サターン5**ロケット（AS-511）で打ち上げ。船名は指令船「カスパー」、月着陸船「オリオン」。クルーはジョン・ヤング（船長）、チャールズ・デューク（着陸船操縦士）、トマス・マットイングリー（指令船操縦士）。着陸目標はデイケン高地（Descartes）付近で、若い火山岩と古老な高地の岩石を対比できる観測点を選定。月面では3回の船外活動を行い、合計約20時間弱、月面車LRVで約27kmを走破、岩石・土壌の採取や月震計の設置などを実施し、地球に約95kgのサンプルを持ち帰った。",
-      descriptionParagraphs: [
+      description: [
+        "NASAの有人月ミッション・アポロ計画の第10回飛行（最後から2番目の月着陸ミッション）が、フロリダ州ケネディ宇宙センターからスタートした日。月の「高地」への初着陸を狙い、クレーターに偏りがちだった着陸点の地質を一気に補完する意義を持った。",
         "このミッションの大きなテーマは「月の高地」そのものの科学で、月海（マリア）主体の着陸が続いたアポロの潮流に、地質年齢差とクレーター累積史を同時に読み解くためのピースを挿入した。採取サンプルは、後の**惑星地質**・**宇宙化学**研究で、月の地殻分異や巨大衝突史を議論する中核的データの一翼となり、今日まで学術的に蓄積・再解析が続いている。",
         "帰還の軌跡上では、指令船パノラマ窓越しの**地球・太陽・宇宙**の同時把握や、人間の身体が耐える**放射線・低重力**下での長時間活動の記録は、以後の有人宇宙施設（スペースシャトル、ISS、そして再び月を目指す各計画）の**生命維持・作業工学的知見**の母体にもなった。",
         "映像とテレメトリは、**巨大ロケットと精密探査器の合体**に人が乗る、という20世紀宇宙開発の到達点を象徴する記録であると同時に、地球外天体での**現地科学（フィールド地質）**の価値を、一般にも分かる形で残した。スライド上の静止画をめくるように思い出を呼び起こす体験は、デジタル・アーカイブが求める「閲覧」と「文脈の回復」に重なる。"
-      ]
+      ].join("\n\n"),
+      images: HERO_IMAGE_PATHS.slice()
     };
 
     const categories = [
@@ -449,9 +462,36 @@
         title: "国際・近代史",
         sort: "掲載順",
         events: [
-          { year: 1889, title: "アドルフ・ヒトラー誕生", score: 6, summary: "オーストリアのブラウナウで誕生", text: "後に第二次世界大戦を引き起こすナチス・ドイツの指導者となり、20世紀最大の悲劇の一因となった。", image: "https://images.unsplash.com/photo-1526406673874-1f6f7e0c8a5d?w=800&q=80" },
-          { year: 1912, title: "シアトル・ゼネスト（前後期の労働運動の象徴）", score: 7, summary: "アメリカで労働運動が活発化", text: "20世紀初頭の労働者権利の拡大に向けた動きの一端を象徴する出来事として位置づけられる。", image: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&q=80" },
-          { year: 1999, title: "コロンバイン高校銃乱射事件", score: 7, summary: "アメリカ・コロラド州で発生", text: "学校銃撃事件の象徴的存在となり、銃規制や学校安全対策の議論を世界的に加速させた。", image: "https://images.unsplash.com/photo-1580582932707-520aed937d7b?w=800&q=80" }
+          {
+            date: "1889-04-16",
+            locale_calendar_label: "4月16日",
+            category: "国際・近代史",
+            title: "アドルフ・ヒトラー誕生",
+            subtitle: "オーストリア・ブラウナウ",
+            summary: "オーストリアのブラウナウで誕生",
+            description: "後に第二次世界大戦を引き起こすナチス・ドイツの指導者となり、20世紀最大の悲劇の一因となった。",
+            images: ["https://images.unsplash.com/photo-1526406673874-1f6f7e0c8a5d?w=800&q=80"]
+          },
+          {
+            date: "1912-04-16",
+            locale_calendar_label: "4月16日",
+            category: "国際・近代史",
+            title: "シアトル・ゼネスト（前後期の労働運動の象徴）",
+            subtitle: "アメリカ北西部",
+            summary: "アメリカで労働運動が活発化",
+            description: "20世紀初頭の労働者権利の拡大に向けた動きの一端を象徴する出来事として位置づけられる。",
+            images: ["https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&q=80"]
+          },
+          {
+            date: "1999-04-16",
+            locale_calendar_label: "4月16日",
+            category: "国際・近代史",
+            title: "コロンバイン高校銃乱射事件",
+            subtitle: "アメリカ・コロラド州",
+            summary: "アメリカ・コロラド州で発生",
+            description: "学校銃撃事件の象徴的存在となり、銃規制や学校安全対策の議論を世界的に加速させた。",
+            images: ["https://images.unsplash.com/photo-1580582932707-520aed937d7b?w=800&q=80"]
+          }
         ]
       },
       {
@@ -460,8 +500,26 @@
         title: "科学・技術",
         sort: "掲載順",
         events: [
-          { year: 2010, title: "ディープウォーター・ホライズン原油流出事故", score: 6, summary: "メキシコ湾で海底油田が爆発", text: "史上最大級の海洋汚染事故の一つで、環境問題とエネルギー政策への関心を高めた。", image: "https://images.unsplash.com/photo-1500375592092-40eb2168fd21?w=800&q=80" },
-          { year: 1984, title: "任天堂がファミコン普及を加速", score: 6, summary: "家庭用ゲーム機が世界的に普及", text: "後のゲーム産業の基盤を築き、デジタル娯楽のあり方を変えた。", image: "https://images.unsplash.com/photo-1606144042614-b2417e99c4e3?w=800&q=80" }
+          {
+            date: "2010-04-16",
+            locale_calendar_label: "4月16日",
+            category: "科学・技術",
+            title: "ディープウォーター・ホライズン原油流出事故",
+            subtitle: "メキシコ湾",
+            summary: "メキシコ湾で海底油田が爆発",
+            description: "史上最大級の海洋汚染事故の一つで、環境問題とエネルギー政策への関心を高めた。",
+            images: ["https://images.unsplash.com/photo-1500375592092-40eb2168fd21?w=800&q=80"]
+          },
+          {
+            date: "1984-04-16",
+            locale_calendar_label: "4月16日",
+            category: "科学・技術",
+            title: "任天堂がファミコン普及を加速",
+            subtitle: "家庭用ゲーム機",
+            summary: "家庭用ゲーム機が世界的に普及",
+            description: "後のゲーム産業の基盤を築き、デジタル娯楽のあり方を変えた。",
+            images: ["https://images.unsplash.com/photo-1606144042614-b2417e99c4e3?w=800&q=80"]
+          }
         ]
       },
       {
@@ -470,12 +528,49 @@
         title: "文化・社会",
         sort: "掲載順",
         events: [
-          { year: 1968, title: "プラハの春の影響拡大", score: 7, summary: "東欧で自由化運動が広がる", text: "冷戦下の政治体制に対する挑戦として歴史的意義を持つ。", image: "https://images.unsplash.com/photo-1528722828814-7b8c7e7a9d5d?w=800&q=80" },
-          { year: 1971, title: "アムネスティ・インターナショナルが活動拡大", score: 5, summary: "人権擁護活動が世界的に広がる", text: "政治犯の解放や人権問題への国際的関心を高める重要な役割を果たした。", image: "https://images.unsplash.com/photo-1509099836639-18ba1795216d?w=800&q=80" },
-          { year: 2008, title: "スペースXの影響力拡大", score: 5, summary: "民間宇宙開発が進展", text: "宇宙開発の商業化を加速させ、国家主導から民間主導への転換点となった。", image: "https://images.unsplash.com/photo-1516339901601-2e1a62d0bd1c?w=800&q=80" }
+          {
+            date: "1968-04-16",
+            locale_calendar_label: "4月16日",
+            category: "文化・社会",
+            title: "プラハの春の影響拡大",
+            subtitle: "東欧",
+            summary: "東欧で自由化運動が広がる",
+            description: "冷戦下の政治体制に対する挑戦として歴史的意義を持つ。",
+            images: ["https://images.unsplash.com/photo-1528722828814-7b8c7e7a9d5d?w=800&q=80"]
+          },
+          {
+            date: "1971-04-16",
+            locale_calendar_label: "4月16日",
+            category: "文化・社会",
+            title: "アムネスティ・インターナショナルが活動拡大",
+            subtitle: "人権",
+            summary: "人権擁護活動が世界的に広がる",
+            description: "政治犯の解放や人権問題への国際的関心を高める重要な役割を果たした。",
+            images: ["https://images.unsplash.com/photo-1509099836639-18ba1795216d?w=800&q=80"]
+          },
+          {
+            date: "2008-04-16",
+            locale_calendar_label: "4月16日",
+            category: "文化・社会",
+            title: "スペースXの影響力拡大",
+            subtitle: "民間宇宙",
+            summary: "民間宇宙開発が進展",
+            description: "宇宙開発の商業化を加速させ、国家主導から民間主導への転換点となった。",
+            images: ["https://images.unsplash.com/photo-1516339901601-2e1a62d0bd1c?w=800&q=80"]
+          }
         ]
       }
     ];
+
+    function yearFromISODate(iso) {
+      return parseInt(iso.slice(0, 4), 10);
+    }
+
+    function monthDayFromISODate(iso) {
+      const m = parseInt(iso.slice(5, 7), 10);
+      const d = parseInt(iso.slice(8, 10), 10);
+      return { month: m, day: d };
+    }
 
     function esc(s) {
       const d = document.createElement("div");
@@ -517,15 +612,18 @@
         </div>`
       );
       cat.events.forEach((e) => {
-        const era = eraForYear(e.year);
+        const y = yearFromISODate(e.date);
+        const era = eraForYear(y);
+        const sub = e.subtitle ? `<p class="card--std__sub">${esc(e.subtitle)}</p>` : "";
         block.push(`
             <article class="card card--std">
               <div class="card--std__head">
-                <span class="card--std__year">${esc(String(e.year))}年</span>
+                <span class="card--std__year">${esc(String(y))}年</span>
                 <span style="font-size:0.65rem;color:var(--text-dim)">${esc(era || "—")}</span>
               </div>
               <h3 class="card--std__h">${esc(e.title)}</h3>
-              <p class="card--std__p">${esc(e.summary)} <br /><br />${esc(e.text)}</p>
+              ${sub}
+              <p class="card--std__p">${esc(e.summary)} <br /><br />${esc(e.description)}</p>
             </article>
           `);
       });
@@ -553,30 +651,34 @@
     })();
 
     (function setHeroFV() {
-      const y = FV_EVENT.year;
-      const m = FV_EVENT.month;
-      const d = FV_EVENT.day;
+      const ev = FEATURED_EVENT;
+      const y = yearFromISODate(ev.date);
+      const md = monthDayFromISODate(ev.date);
+      const m = md.month;
+      const d = md.day;
       const eyec = document.getElementById("hero-fv-eyecatch");
       if (eyec) {
         eyec.innerHTML =
-          '<span class="hero__fv-year">' + esc(String(y) + "年") + "</span> — " + esc(FV_EVENT.titleLine);
+          '<span class="hero__fv-year">' + esc(String(y) + "年") + "</span> — " + esc(ev.title);
       }
       const heroJp = document.getElementById("hero-jp");
-      if (heroJp) heroJp.textContent = m + "月" + d + "日";
+      if (heroJp) heroJp.textContent = ev.locale_calendar_label || m + "月" + d + "日";
       const t = new Date(y, m - 1, d);
       const w = ["日", "月", "火", "水", "木", "金", "土"][t.getDay()];
+      const descParts = ev.description.split(/\n\n+/);
+      const lead = descParts[0] || "";
+      const rest = descParts.slice(1);
       const sub = document.getElementById("hero-sub");
       if (sub) {
-        sub.textContent =
-          "西暦" + y + "年" + m + "月" + d + "日（" + w + "）。" + FV_EVENT.lead;
+        sub.textContent = "西暦" + y + "年" + m + "月" + d + "日（" + w + "）。" + lead;
       }
       const sum = document.getElementById("hero-fv-summary");
       if (sum) {
-        sum.innerHTML = formatBoldSegments(FV_EVENT.summary);
+        sum.innerHTML = formatBoldSegments(ev.summary);
       }
       const body = document.getElementById("hero-fv-body");
       if (body) {
-        body.innerHTML = FV_EVENT.descriptionParagraphs
+        body.innerHTML = rest
           .map(function (p) { return "<p>" + formatBoldSegments(p) + "</p>"; })
           .join("");
       }
@@ -589,16 +691,17 @@
       const prev = document.getElementById("hero-prev");
       const next = document.getElementById("hero-next");
       if (!track || !dotsWrap || !vp) return;
-      const n = HERO_IMAGES.length;
+      const slides = FEATURED_EVENT.images || [];
+      const n = slides.length;
       if (n === 0) return;
       document.getElementById("hero-slider").style.setProperty("--hero-slides", String(n));
-      const slidesHtml = HERO_IMAGES.map(
+      const slidesHtml = slides.map(
         (src, j) =>
           `<li class="hero-slider__slide" data-slide="${j}" role="group" aria-roledescription="スライド" aria-label="スライド ${j + 1} / ${n}"><img class="img-g" src="${esc(src)}" width="800" height="800" alt="" ${j > 0 ? "loading='lazy' decoding='async'" : ""} /></li>`
       );
       track.innerHTML = slidesHtml.join("");
       track.style.width = n * 100 + "%";
-      const dots = HERO_IMAGES.map(
+      const dots = slides.map(
         (_src, j) =>
           `<button type="button" class="hero-slider__dot" id="hero-dot-${j}" aria-label="スライド ${j + 1} へ移動" aria-pressed="false"></button>`
       );

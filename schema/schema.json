@@ -1,92 +1,101 @@
 [
   {
-    "date": "4月20日",
+    "date": "2004-04-20",
     "year": "2004年",
+    "locale_calendar_label": "4月20日",
     "category": "政治・行政",
     "title": "年金制度改革法成立",
     "subtitle": "持続可能性を巡る大転換",
     "summary": "少子高齢化に対応するための年金制度改革法が成立。",
     "description": "小泉内閣のもとで成立したこの改革では、保険料の段階的引き上げと給付抑制が導入された。将来世代への負担軽減と制度維持を目的としたが、国民の不安や批判も大きく、以後の社会保障議論の軸となった。",
-    "images": ["image link"]
+    "images": []
   },
   {
-    "date": "4月20日",
+    "date": "1999-04-20",
     "year": "1999年",
+    "locale_calendar_label": "4月20日",
     "category": "政治・行政",
     "title": "地方分権改革の議論本格化",
     "subtitle": "中央集権から地方へ",
     "summary": "地方分権一括法に関する審議が活発化。",
     "description": "中央政府から地方自治体へ権限を移す大規模改革が進められた。機関委任事務の廃止など、日本の統治構造を大きく変える転換点となった。",
-    "images": ["image link"]
+    "images": []
   },
   {
-    "date": "4月20日",
+    "date": "1952-04-20",
     "year": "1952年",
+    "locale_calendar_label": "4月20日",
     "category": "政治・行政",
     "title": "主権回復直前の政府調整",
     "subtitle": "占領終了へ向けた準備",
     "summary": "講和条約発効を目前に政府内で最終調整。",
     "description": "サンフランシスコ講和条約発効（4月28日）を前に、日本政府は外交・安全保障体制の整備を急いだ。戦後体制からの転換点に位置づけられる重要な局面だった。",
-    "images": ["image link"]
+    "images": []
   },
   {
-    "date": "4月20日",
+    "date": "2015-04-20",
     "year": "2015年",
+    "locale_calendar_label": "4月20日",
     "category": "経済・産業",
     "title": "インバウンド政策の強化",
     "subtitle": "観光立国への加速",
     "summary": "訪日外国人増加に対応する政策が強化された。",
     "description": "ビザ緩和や免税制度の拡充などにより、日本は観光立国を目指す戦略を加速。訪日客は急増し、地域経済への波及効果が期待された。",
-    "images": ["image link"]
+    "images": []
   },
   {
-    "date": "4月20日",
+    "date": "1987-04-20",
     "year": "1987年",
+    "locale_calendar_label": "4月20日",
     "category": "経済・産業",
     "title": "国鉄民営化の影響が顕在化",
     "subtitle": "JR体制の本格始動",
     "summary": "民営化後の鉄道経営改革が進展。",
     "description": "国鉄の分割民営化によりJR各社が発足し、効率化とサービス改善が進められた。鉄道事業の経営構造が大きく変化した。",
-    "images": ["image link"]
+    "images": []
   },
   {
-    "date": "4月20日",
+    "date": "1970-04-20",
     "year": "1970年",
+    "locale_calendar_label": "4月20日",
     "category": "経済・産業",
     "title": "輸出主導型経済の拡大",
     "subtitle": "高度成長のピーク期",
     "summary": "日本の輸出産業が急速に拡大。",
     "description": "自動車や電機製品の輸出が増加し、日本は世界経済で存在感を高めた。貿易摩擦の萌芽もこの時期に見られる。",
-    "images": ["image link"]
+    "images": []
   },
   {
-    "date": "4月20日",
+    "date": "2016-04-20",
     "year": "2016年",
+    "locale_calendar_label": "4月20日",
     "category": "社会・文化",
     "title": "熊本地震の被害拡大",
     "subtitle": "余震続く中での対応",
     "summary": "一連の地震で被害が拡大し支援が本格化。",
     "description": "4月14日以降続く熊本地震で、20日頃も余震が続き、避難者は増加。インフラ復旧や支援活動が全国規模で展開された。",
-    "images": ["image link"]
+    "images": []
   },
   {
-    "date": "4月20日",
+    "date": "2008-04-20",
     "year": "2008年",
+    "locale_calendar_label": "4月20日",
     "category": "社会・文化",
     "title": "食の安全問題が注目",
     "subtitle": "消費者意識の転換",
     "summary": "食品偽装や安全問題への関心が高まる。",
     "description": "輸入食品問題や偽装表示事件が続き、消費者の不信感が増大。行政による監視強化と制度整備の必要性が議論された。",
-    "images": ["image link"]
+    "images": []
   },
   {
-    "date": "4月20日",
+    "date": "1964-04-20",
     "year": "1964年",
+    "locale_calendar_label": "4月20日",
     "category": "社会・文化",
     "title": "東京五輪準備の本格化",
     "subtitle": "高度成長と都市変革",
     "summary": "インフラ整備が急ピッチで進行。",
     "description": "新幹線や高速道路、競技施設の整備が進み、日本の国際的復帰を象徴するイベントに向けた準備が加速した。",
-    "images": ["image link"]
+    "images": []
   }
 ]

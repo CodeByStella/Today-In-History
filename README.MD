@@ -61,9 +61,11 @@ The app stores **history event** records. Each document (or row) follows this sh
 ```json
 {
   "date": "",
+  "year":"",
   "category": "",
   "title": "",
   "subtitle": "",
+  "summary" : "",
   "description": "",
   "images": []
 }

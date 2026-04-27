@@ -2,7 +2,7 @@
   "title": "Today in History hub registry",
   "description": "Index of artifacts managed in this program hub.",
   "version": "1.0.0",
-  "updated": "2026-04-26",
+  "updated": "2026-04-27",
   "mocks": [
     {
       "id": "mock-first-ui",
@@ -29,12 +29,21 @@
       "status": "active"
     }
   ],
+  "pipelines": [
+    {
+      "id": "image-search-pipeline",
+      "type": "tooling",
+      "path": "image-search-pipeline/",
+      "description": "Consumes event JSON + image_search_keywords; resolves and verifies image URLs into images (stub CLI + README).",
+      "status": "active"
+    }
+  ],
   "prompts": [
     {
       "id": "ingest-chatgpt-template",
       "type": "prompt_template",
       "path": "prompt/daily-events.template.md",
-      "description": "Prompt for ChatGPT.com to produce structured daily events (JP modern history).",
+      "description": "Prompt for ChatGPT.com: engaging daily highlights + image_search_keywords (no image URLs).",
       "status": "active"
     },
     {

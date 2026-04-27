@@ -10,6 +10,7 @@ This repository is the **program hub** for the Today in History product: it hold
 | [docs/](docs/) | Narrative documentation: pipeline, data model, product spec, strategy, team template, progress. |
 | [schema/](schema/) | JSON Schema (`event.schema.json`) and sample data (`schema.json`). |
 | [prompt/](prompt/) | ChatGPT.com ingestion prompts and how to run the editorial pipeline. |
+| [image-search-pipeline/](image-search-pipeline/) | Resolves `image_search_keywords` into verified `images` (stub CLI + README; extend with your search APIs). |
 | [mock/](mock/) | Static UI prototypes; see below for the hosted preview. |
 
 ## Where to find what
@@ -21,7 +22,8 @@ This repository is the **program hub** for the Today in History product: it hold
 | Event record fields, JSON examples, SQL sketch, indexes | [docs/data-model.md](docs/data-model.md) |
 | Formal JSON Schema (one event) | [schema/event.schema.json](schema/event.schema.json) |
 | Sample event array | [schema/schema.json](schema/schema.json) |
-| Ingestion: ChatGPT.com → parse → DB | [docs/data-pipeline.md](docs/data-pipeline.md) |
+| Ingestion: ChatGPT.com → image pipeline → DB | [docs/data-pipeline.md](docs/data-pipeline.md) |
+| Image keyword → URL pipeline | [image-search-pipeline/README.md](image-search-pipeline/README.md) |
 | Prompt templates | [prompt/](prompt/) |
 | Product vision and MVP | [docs/product-strategy.md](docs/product-strategy.md) |
 | Monetization notes | [docs/monetization.md](docs/monetization.md) |

@@ -12,7 +12,7 @@ Research runs use **chatgpt.com** in the browser (optionally with **web search**
 
 ## Expected model output
 
-Prefer a **single fenced JSON code block** containing an **array of objects**, each object matching the schema (field names exactly: `date`, `category`, `title`, `subtitle`, `summary`, `description`, `images`, optional `locale_calendar_label`, optional `year` for ingest only).
+Prefer a **single fenced JSON code block** containing an **array of objects**, each object matching the schema (field names exactly: `date`, `category`, `title`, `subtitle`, `summary`, `description`, **`image_search_keywords`** (required), optional `highlight_kind`, optional `locale_calendar_label`, optional `year` for ingest only). **Do not** ask the model for **`images`** URLs; the **[`image-search-pipeline/`](../image-search-pipeline/)** fills `images` later. The parser may inject `"images": []` before validation if the key is absent.
 
 If the model returns Markdown sections instead, the parser must still emit valid JSON for validation.
 
@@ -29,4 +29,10 @@ Assign a **named owner** in [../docs/team.md](../docs/team.md) for: prompt versi
 
 ## Versioning
 
-When the prompt or schema changes, bump a **prompt version** string inside `daily-events.template.md` and record the change in [../docs/progress.md](../docs/progress.md) or your issue tracker.
+When the prompt or schema changes, bump the **semantic version** on the line under the title in [daily-events.template.md](daily-events.template.md), and record the change in [../docs/progress.md](../docs/progress.md) or your issue tracker.
+
+Use `MAJOR.MINOR.PATCH`:
+
+- **MAJOR** — breaking changes to output rules or JSON field contract (anything that would force parser or ingest updates).
+- **MINOR** — new or materially stricter requirements (new sections, new mandatory checks, changed category list or caps) while the same parser still accepts valid prior-shaped JSON.
+- **PATCH** — wording, typos, or clarifications that do not change what a conforming model was already expected to do.

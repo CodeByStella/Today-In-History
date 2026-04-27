@@ -1,26 +1,28 @@
-# Data model — history events
+# Data model — history highlights
 
-The app stores **history event** records. Each document (or row) follows the shape below. Machine-readable validation lives in [schema/event.schema.json](../schema/event.schema.json); a filled sample array is in [schema/schema.json](../schema/schema.json).
+The app stores **highlight** records (historical events, birthdays, culture hooks, and similar “on this day” items). Each document (or row) follows the shape below. Machine-readable validation lives in [schema/event.schema.json](../schema/event.schema.json); a filled sample array is in [schema/schema.json](../schema/schema.json).
 
 ## Canonical storage vs display
 
-- **`date`** (required): **ISO 8601 calendar date** of the historical event, `YYYY-MM-DD`. This is the single source of truth for sorting and “on this day” queries.
-- **Localized labels** (for example `4月20日`): derive in the **frontend** from `date` and locale, or optionally store a duplicate in `locale_calendar_label` for ingest/debug — not required for the app.
+- **`date`** (required): **ISO 8601 calendar date** `YYYY-MM-DD` — the historical day for the story (e.g. event date, or a person’s birth date on that month-day in their birth year).
+- **Localized labels** (e.g. `4月20日`): derive in the **frontend** from `date` and locale, or optionally store `locale_calendar_label` for ingest/debug.
 
 ## Event record
 
 | Field | Type | Required | Description |
 |--------|------|----------|-------------|
-| `date` | string (ISO 8601 date) | yes | Calendar date for the event (e.g. `1999-12-31`, format `YYYY-MM-DD`) |
-| `category` | string | yes | Category label for filtering and grouping (used when showing events by category) |
-| `title` | string | yes | Main headline for the event |
-| `subtitle` | string | no | Optional secondary line (e.g. year, location, or short tagline) |
-| `summary` | string | no | Short overview (one or two sentences) |
-| `description` | string (long text) | yes | Full narrative, explanation, or long summary text |
-| `images` | array of string (URI) | no | Image URLs or paths; use an empty array when there are no images |
-| `year` | string | no | **Legacy / ingest helper** only (e.g. `2004年`); prefer deriving year from `date` |
-| `locale_calendar_label` | string | no | Optional display helper from ingest (e.g. `4月20日`); not required if UI formats `date` |
-| `source_run_id` | string | no | Optional idempotency / provenance for re-ingestion batches |
+| `date` | string (ISO date) | yes | Calendar date for the highlight |
+| `category` | string | yes | UI grouping (e.g. 政治・行政, 人物・生誕と命日) |
+| `highlight_kind` | string | no | Editorial tag: `event`, `birthday`, `death_anniversary`, `culture`, `other` |
+| `title` | string | yes | Main headline |
+| `subtitle` | string | no | Secondary line |
+| `summary` | string | no | Short overview |
+| `description` | string (long text) | yes | Main body copy |
+| `image_search_keywords` | array of string | yes | **3–10** short queries for the [image-search-pipeline](../image-search-pipeline/) — **no URLs** |
+| `images` | array of string (URI) | no | Resolved image URLs or paths; usually **empty at ChatGPT ingest**, filled by the image pipeline |
+| `year` | string | no | Legacy ingest helper (e.g. `2004年`); prefer deriving from `date` |
+| `locale_calendar_label` | string | no | Optional ingest helper |
+| `source_run_id` | string | no | Batch / idempotency for re-ingestion |
 
 ## JSON shape (canonical)
 
@@ -28,40 +30,27 @@ The app stores **history event** records. Each document (or row) follows the sha
 {
   "date": "2004-04-20",
   "category": "政治・行政",
-  "title": "（イベントの見出し）",
-  "subtitle": "（補足・副題）",
-  "summary": "（短い概要。1〜2文）",
-  "description": "（説明文の本文。複数文可）",
+  "highlight_kind": "event",
+  "title": "（見出し）",
+  "subtitle": "（補足）",
+  "summary": "（短い概要）",
+  "description": "（本文）",
+  "image_search_keywords": [
+    "2004年 年金改革 国会 写真",
+    "小泉純一郎 内閣 記者会見 画像",
+    "日本 社会保障 2004 ニュース 資料"
+  ],
   "images": []
-}
-```
-
-## Example (filled)
-
-```json
-{
-  "date": "2004-04-20",
-  "category": "政治・行政",
-  "title": "年金制度改革法成立",
-  "subtitle": "持続可能性を巡る大転換",
-  "summary": "少子高齢化に対応するための年金制度改革法が成立。",
-  "description": "小泉内閣のもとで成立したこの改革では、保険料の段階的引き上げと給付抑制が導入された。将来世代への負担軽減と制度維持を目的としたが、国民の不安や批判も大きく、以後の社会保障議論の軸となった。",
-  "images": [],
-  "locale_calendar_label": "4月20日"
 }
 ```
 
 ## Relational mapping (optional)
 
-If you use a SQL database with a normalized `images` table:
-
-- **events**: `id`, `date`, `category`, `title`, `subtitle`, `summary`, `description` (plus `created_at` / `updated_at` if you need them).
-- **event_images**: `id`, `event_id` (foreign key to `events`), `url` (or `path`), optional `sort_order`.
-
-The document model is equivalent to one event row plus its related image rows or URLs.
+- **events**: core columns including `description`, optional `highlight_kind`.
+- **event_image_search_keywords**: `event_id`, `sort_order`, `query` (normalized from JSON array), or store as JSON in a single column.
+- **event_images**: `event_id`, `url` or `path`, `sort_order` — populated after the image-search pipeline.
 
 ## Suggested indexes
 
-- Primary key (or unique id) on `id` if you use surrogate keys.
 - Index on `date` for “on this day” lookups.
-- Index on `category` if you often filter or group by category.
+- Index on `category` and optional `highlight_kind` if you filter in the API.

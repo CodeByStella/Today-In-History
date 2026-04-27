@@ -18,7 +18,7 @@ Help users explore **what happened on this calendar day** in history, with a cal
 
 - **One day type:** “on this day” for month-day, backed by canonical event JSON.
 - **Locales:** Japanese UI copy with data in Japanese; date formatting per device locale later.
-- **Media:** images when URLs are stable and rights are clear; empty `images` acceptable.
+- **Media:** ChatGPT outputs **`image_search_keywords`** only; **`images`** are filled by the hub **image-search-pipeline** (or downstream) after URL verification and rights checks; empty `images` remains acceptable if no safe asset is found.
 
 ## Non-goals (for early releases)
 

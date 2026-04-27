@@ -2,10 +2,10 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://github.com/today-in-history/hub/event.schema.json",
   "title": "HistoryEvent",
-  "description": "One historical event for Today in History storage and API responses.",
+  "description": "One history highlight for Today in History storage and API responses. Text comes from editorial ingest; image URLs are filled later by the image-search pipeline using image_search_keywords.",
   "type": "object",
   "additionalProperties": false,
-  "required": ["date", "category", "title", "description"],
+  "required": ["date", "category", "title", "description", "image_search_keywords"],
   "properties": {
     "id": {
       "type": "string",
@@ -14,12 +14,17 @@
     "date": {
       "type": "string",
       "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
-      "description": "Calendar date of the event (ISO 8601 date, YYYY-MM-DD)."
+      "description": "Calendar date of the highlight (ISO 8601 date, YYYY-MM-DD)—historical day for events, or the observed calendar day for birthdays and similar."
     },
     "category": {
       "type": "string",
       "minLength": 1,
-      "description": "Grouping label for UI sections (e.g. 政治・行政)."
+      "description": "Grouping label for UI sections (e.g. 政治・行政, 人物・生誕と命日)."
+    },
+    "highlight_kind": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Editorial tag: e.g. event, birthday, death_anniversary, culture, other — helps tone and layout; not a strict enum in tooling."
     },
     "title": {
       "type": "string",
@@ -36,7 +41,18 @@
     "description": {
       "type": "string",
       "minLength": 1,
-      "description": "Full narrative or long explanation."
+      "description": "Full narrative or long explanation (body copy for the app)."
+    },
+    "image_search_keywords": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 10,
+      "items": {
+        "type": "string",
+        "minLength": 4,
+        "maxLength": 200
+      },
+      "description": "High-signal search queries (usually Japanese) for the image-search pipeline. No image URLs here—only strings meant for image search APIs or manual lookup."
     },
     "images": {
       "type": "array",
@@ -45,7 +61,7 @@
         "minLength": 1
       },
       "default": [],
-      "description": "Image URLs or storage paths."
+      "description": "Resolved image HTTPS URLs or storage paths. Typically empty at ChatGPT ingest; populated by image-search-pipeline before or at load time."
     },
     "year": {
       "type": "string",

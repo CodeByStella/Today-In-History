@@ -1,0 +1,2 @@
+# HTTP client for Wikimedia Commons API image search (run.py --search).
+httpx>=0.27,<0.29

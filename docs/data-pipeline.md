@@ -1,6 +1,6 @@
-# Data pipeline: ChatGPT.com → database → frontend
+# Data pipeline: ChatGPT.com → image search → database → frontend
 
-This product builds a **proprietary event database**. Research and drafting use **chatgpt.com** (browser UI, including web search when enabled), **not** the OpenAI HTTP API. The pipeline is: prompt → acquire text → parse → normalize → validate → load → serve to the client.
+This product builds a **proprietary highlight database** (events, birthdays, culture hooks, and similar “on this day” content). **Editorial text** is drafted with **chatgpt.com** (browser UI, with web search). **Images are not produced by ChatGPT**; instead the model outputs **`image_search_keywords`**, and the **[`image-search-pipeline/`](../image-search-pipeline/)** sub-project (or equivalent tooling) resolves those into **`images`** URLs before or at load time. The HTTP API is **not** required for the ChatGPT ingest step.
 
 ## High-level flow
 
@@ -9,12 +9,15 @@ flowchart LR
   subgraph hub [Program hub repo]
     Prompt[prompt templates]
     Schema[event.schema.json]
+    ImgPipe[image-search-pipeline]
   end
   subgraph ingest [Ingestion]
     CG[chatgpt.com session]
     Acquire[acquire raw text]
     Parse[parse and normalize]
-    Validate[JSON Schema validate]
+    Val1[JSON Schema validate]
+    ImgPipe
+    Val2[optional re-validate]
     Load[upsert into DB]
   end
   subgraph runtime [App runtime]
@@ -24,12 +27,16 @@ flowchart LR
   Prompt --> CG
   CG --> Acquire
   Acquire --> Parse
-  Schema --> Validate
-  Parse --> Validate
-  Validate --> Load
+  Schema --> Val1
+  Parse --> Val1
+  Val1 --> ImgPipe
+  ImgPipe --> Val2
+  Val2 --> Load
   Load --> API
   API --> FE
 ```
+
+`Val2` can be the same schema pass once `images` is filled, or a stricter contract if you split “text ingest” vs “shippable record” schemas in tooling.
 
 ## Sequence (operational)
 
@@ -38,32 +45,38 @@ sequenceDiagram
   participant Editor as Human_or_tooling
   participant CG as ChatGPT_com
   participant Parser as Parser_script
-  participant Val as Schema_validator
+  participant Val as JSON_Schema
+  participant Img as image_search_pipeline
   participant DB as Database
 
   Editor->>CG: Paste prompt from prompt/daily-events.template.md
-  CG-->>Editor: Reply markdown_or_JSON_block
+  CG-->>Editor: JSON array with image_search_keywords no image URLs
   Editor->>Parser: Raw export file_or_clipboard
-  Parser->>Parser: Map to canonical fields ISO_date_etc
+  Parser->>Parser: Normalize ISO dates inject images [] if needed
   Parser->>Val: Event array JSON
   Val-->>Parser: OK_or_errors
+  Parser->>Img: events.json validated
+  Img->>Img: search verify rights merge images
+  Img-->>Parser: enriched JSON
   Parser->>DB: Idempotent_upsert source_run_id_optional
 ```
 
 ## Steps
 
-1. **Prompt** — Use a fixed template ([prompt/daily-events.template.md](../prompt/daily-events.template.md)) so every run requests the same scope, categories, volume (3–5 per category), sort order (newest first), and **field names** aligned with [schema/event.schema.json](../schema/event.schema.json).
-2. **Acquisition** — Capture the model reply (copy/paste, export, or internal automation). Document the **one blessed method** in [prompt/README.MD](../prompt/README.MD) so the team does not diverge.
-3. **Parse** — Convert model output into an array of objects. Normalize **`date` to `YYYY-MM-DD`**. Drop or migrate ingest-only strings (for example `4月20日`, `2004年`) into canonical fields or discard after validation.
-4. **Validate** — Run [schema/event.schema.json](../schema/event.schema.json) on each record before load.
-5. **Load** — Upsert into the production database. Use an optional **`source_run_id`** (or batch id) so re-ingesting the same calendar day is idempotent and auditable.
+1. **Prompt** — Use [prompt/daily-events.template.md](../prompt/daily-events.template.md): engagement-focused copy, **`image_search_keywords` only** for media (no URLs). Field names align with [schema/event.schema.json](../schema/event.schema.json).
+2. **Acquisition** — Capture the model reply (copy/paste, export, or approved automation). Document the **one blessed method** in [prompt/README.MD](../prompt/README.MD).
+3. **Parse** — Normalize **`date` to `YYYY-MM-DD`**. If the model omitted `images`, add **`"images": []`** before validation. Map legacy fields if migrating older files.
+4. **Validate (text)** — Run JSON Schema on each record; **`image_search_keywords` is required** at this stage.
+5. **Image pipeline** — Run [image-search-pipeline/run.py](../image-search-pipeline/run.py) with **`--search`**: resolves **`image_search_keywords`** via Wikimedia Commons + Openverse HTTP APIs and writes **`images`** (see [image-search-pipeline/README.md](../image-search-pipeline/README.md)). Swap in commercial image-search APIs here if you need stricter relevance.
+6. **Load** — Upsert into the database. Use **`source_run_id`** (or batch id) for idempotent re-ingestion and to tie text runs to image runs.
 
 ## Risks (automation and compliance)
 
 - **Terms of service**: Automated scraping of chatgpt.com may conflict with OpenAI’s terms; treat **manual export + parser** as the default reliable path and seek legal review before unattended scraping.
+- **Image providers**: Third-party image search APIs have their own terms, quotas, and attribution requirements—document them beside the pipeline implementation.
 - **Brittleness**: UI and HTML structure change; parsers tied to DOM break without warning.
 - **Quality**: Hallucinations and wrong dates require human or scripted QA, especially for history content.
 
 ## Frontend contract
 
-The client loads **canonical JSON** from your API (or static bundles generated from the same validated pipeline). It should not depend on raw ChatGPT markdown at runtime.
+The client loads **canonical JSON** from your API (or static bundles). It should not depend on raw ChatGPT markdown at runtime. **`images`** should only ship URLs that the pipeline has verified (or your CDN paths after download).
